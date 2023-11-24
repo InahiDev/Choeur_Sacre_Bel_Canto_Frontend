@@ -1,10 +1,13 @@
 <template>
   | <router-link to="/board">Administrateur</router-link>
+  
 </template>
 
 <script>
 export default {
-  name: 'NavAdmin'
+  name: 'NavAdmin',
+  components: {
+  }
 }
 </script>
 

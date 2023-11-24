@@ -1,21 +1,24 @@
 <template>
-  <NavPublic/>
-  <NavLogged v-if="this.$store.status =='loggedIn'"/> 
-  <NavAdmin v-if="this.$store.status == 'loggedIn' && this.$store.role == 'Admin'"/>
-  
+  <NavPublic v-if="status !== 'private'"/>
+  <NavPrivate v-if="status == 'private' && user.role !== 'None'"/> 
+  <NavAdmin v-if="connectionStatus == 'logedIn' && user.role == 'Admin'"/>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import NavPublic from './NavPublic.vue'
-import NavLogged from './NavLogged.vue'
+import NavPrivate from './NavPrivate.vue'
 import NavAdmin from './NavAdmin.vue'
 
 export default {
   name: 'NavComp',
   components: {
     NavPublic,
-    NavLogged,
+    NavPrivate,
     NavAdmin
+  },
+  computed: {
+    ...mapState(['status', 'connectionStatus', 'user'])
   }
 }
 </script>

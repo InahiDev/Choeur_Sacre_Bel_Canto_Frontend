@@ -4,11 +4,10 @@
       <!--Logo CSBC à insérer-->
       <h1>Choeur Sacré Bel Canto</h1>
     </div>
-    <div class="menu" @click="activateMenu()">
+    <div class="menu" >
       <h2>Menu</h2>
-      <i class="fa-solid fa-bars"></i>
-      <NavComp/>
-      <router-view v-if="this.menuActive"/>
+      <i class="fa-solid fa-bars" @click="activateMenu()"></i>
+      <NavComp v-if="this.menuActive == true"/>
     </div>
   </header>
 </template>
@@ -28,10 +27,12 @@ export default {
   },
   methods: {
     activateMenu() {
-      if (!this.activeMenu) {
-        this.activeMenu = true
+      if (!this.menuActive) {
+        event.stopPropagation()
+        this.menuActive = true
       } else {
-        this.activeMenu = false
+        event.stopPropagation()
+        this.menuActive = false
       }
     }
   }

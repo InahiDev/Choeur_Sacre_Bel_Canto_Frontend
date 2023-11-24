@@ -7,11 +7,11 @@
       </div>
       <div v-else-if="mode == 'login'" class="mode__container">
         <h2 class="card__title">Connexion</h2>
-        <p class="card__subtitle">Vous ne possédez pas de compte ?<br/><span class="card__switch" @click="switchToCreate()">Créez un compte!</span></p>
+        <p class="card__subtitle">Vous ne possédez pas de compte ?<br/><span class="card__switch" @click.stop="switchToCreate()">Créez un compte!</span></p>
       </div>
       <div v-else-if="mode == 'create'" class="mode__container">
         <h2 class="card__title">Inscription</h2>
-        <p class="card__subtitle">Vous possédez déjà un compte ?<br/><span class="card__switch" @click="switchToLogin()">Se connecter avec vos identifiants</span></p>
+        <p class="card__subtitle">Vous possédez déjà un compte ?<br/><span class="card__switch" @click.stop="switchToLogin()">Se connecter avec vos identifiants</span></p>
       </div>
       <div class="logForm">
         <form>
@@ -21,18 +21,21 @@
           <input v-if="mode == 'create'" v-model.lazy="lastName" id="lastName" placeholder="Nom"/>
         </form>
       </div>
-      <ButtonComp v-if="mode == 'login'" buttonText="Se Connecter" @click="login()"/>
-      <ButtonComp v-else-if="mode == 'create'" buttonText="S'enregistrer" @click="createAccount()"/>
-      <ButtonComp v-else-if="mode == 'resetPassword'" buttonText="Réinitialiser" @click="resetPassword()"/>
-      <p v-if="mode != 'resetPassword'" class="card__switch">Mot de passe perdu ?<span class="card__switch" @click="switchToReset()">Réinitialisez votre mot de passe!</span></p>
-      <p v-else class="card__switch"><span class="card__switch" @click="switchToLogin()">Se Connecter</span> | <span class="card__switch" @click="switchToCreate()">S'enregistrer</span></p>
+      <ButtonComp v-if="mode == 'login'" buttonText="Se Connecter" @keydown.enter.stop="login()" @click.stop="login()"/>
+      <ButtonComp v-else-if="mode == 'create'" buttonText="S'enregistrer" @keydown.enter.stop="createAccount()" @click.stop="createAccount()"/>
+      <ButtonComp v-else-if="mode == 'resetPassword'" buttonText="Recevoir un email" @keydown.enter.stop="resetPassword()" @click.stop="resetPassword()"/>
+      <p v-if="mode != 'resetPassword'" class="card__switch">Mot de passe perdu ? <span class="card__switch" @click.stop="switchToReset()">Réinitialisez votre mot de passe!</span></p>
+      <p v-else class="card__switch"><span class="card__switch" @click.stop="switchToLogin()">Se Connecter</span> | <span class="card__switch" @click.stop="switchToCreate()">S'enregistrer</span></p>
     </div>
+    <p class="success" v-if="this.successMsg && !this.errorMsg">{{ successMsg }}<span v-if="this.successMsg == 'Utilisateur reconnecté'">, retourner à la <a href="./">page d'accueil</a> ?</span></p>
+    <p class="error" v-else> {{ errorMsg }} </p>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import ButtonComp from '@/components/Button.vue'
+
 const mailRegex = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/
 
 export default {
@@ -44,8 +47,12 @@ export default {
       password: '',
       firstName: '',
       lastName: '',
-      errorMsg: ''
+      errorMsg: '',
+      successMsg: ''
     }
+  },
+  created () {
+    this.relogFromLocal()
   },
   computed: {
     ...mapState(['status', 'user'])
@@ -63,15 +70,12 @@ export default {
     },
     switchToReset() {
       this.mode = 'resetPassword'
-      this.$store.state.status = ''
     },
     switchToLogin() {
       this.mode = 'login'
-      this.$store.state.status = ''
     },
     switchToCreate() {
       this.mode = 'create'
-      this.$store.state.status = ''
     },
     createAccount() {
       this.$store.dispatch('createAccount', {
@@ -82,30 +86,74 @@ export default {
       })
         .then(() => this.login())
         .catch((error) => {
-          console.log(error)
+          this.successMsg = ''          
           this.errorMsg = error.response.data.message
         })
     },
     login() {
-      console.log("Click reçu")
       this.$store.dispatch('login', {
         email: this.email,
         password: this.password
       })
-        .then(() => {
-          console.log("Utilisateur connecté")
-          //this.$router.push('home')
+        .then((response) => {
+          if (response.data.message === "Connected") {
+            this.errorMsg = ''
+            this.successMsg = "Vous êtes connecté!"
+          }
+          this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error)
+          this.successMsg = ''
           this.errorMsg = error.response.data.message
         })
     },
     resetPassword() {
-      console.log('resetPassword route en cours de construction')
+      if (this.email) {
+        this.$store.dispatch('sendResetEmail', {email: this.email})
+          .then((response) => {
+            if (response.status === 200) {
+              this.errorMsg = ''
+              this.successMsg = "Un email vient de vous être envoyé, cliquez sur le lien présent pour être redirigé vers la page de changement de mot de passe!"
+            }
+          })
+          .catch((error) => {
+            this.successMsg = ''
+            this.errorMsg = `Une erreur est survenue, veuillez recommencer: ${error}`
+          })
+      }
+    },
+    relogFromLocal() {
+      let user = localStorage.getItem('userCSBC')
+      try {
+        if (user) {
+          user = JSON.parse(user)
+          this.$store.dispatch('relogFromToken', user.token)
+            .then((response) => {
+              this.email = response.data.data.email
+              this.firstName = response.data.data.firstName
+              this.lastName = response.data.data.lastName
+              this.errorMsg = ''
+              this.successMsg = "Utilisateur reconnecté"
+            })
+            .catch((error) => {
+              this.successMsg = ''
+              this.errorMsg = "Reconnection impossible: " + error.response.data.message
+            })
+        } else {
+          this.successMsg = ''
+          this.errorMsg = "L'utilisateur stocké ne permet pas la reconnexion, veuillez vous reconnecter."
+          throw new Error('User empty in localStorage')
+        } 
+      } catch(error) {
+        this.$store.state.connectionStatus = 'relog_not_possible'
+        localStorage.removeItem('userCSBC')
+        this.successMsg = ''
+        this.errorMSg = "Reconnection impossible, vérifiez le localStorage: " + error
+      }
     }
   }
 }
+
 </script>
 
 <style lang="scss">

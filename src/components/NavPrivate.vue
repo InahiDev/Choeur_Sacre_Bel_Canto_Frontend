@@ -1,10 +1,16 @@
 <template>
+  <NavPublic />
   | <router-link to="/search">Rechercher</router-link>
 </template>
 
 <script>
+import NavPublic from './NavPublic.vue'
+
 export default {
-  name: 'NavLogged'
+  name: 'NavPrivate',
+  components: {
+    NavPublic
+  }
 }
 </script>
 

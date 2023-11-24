@@ -1,5 +1,6 @@
 <template>
   <body>
+    <AnnonceComp/>
     <section class="annonce">
       <div class="repetition">
         <h3>Prochaine répétition :</h3>
@@ -34,22 +35,38 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import FooterComp from "@/components/Footer.vue"
+import AnnonceComp from '@/components/Annonce.vue'
 
 export default {
   name: "PublicView",
   components: {
-    FooterComp
+    FooterComp,
+    AnnonceComp
   },
   data() {
     return {
       courseCanceled: false
     }
   },
+  beforeMount() {
+
+  },
+  computed: {
+    ...mapState(['status', 'user', 'comments', 'concerts', 'pictures'])
+  },
   methods: {
     cancelCourse() {
       this.courseCanceled = !this.courseCanceled
-    }
+    },
+    getComments() {
+
+    },
+    getConcerts() {
+
+    },
+    
   }
 }
 </script>
