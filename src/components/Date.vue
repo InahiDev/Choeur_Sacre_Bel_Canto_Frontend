@@ -1,12 +1,14 @@
 <template>
   <div class="affichage">
-    <p>Le {{ day }}/{{ month }}/{{ year }} à {{ hour }}:{{ minute }} </p>
+    <p>Le {{ date.day }}/{{ date.month }}/{{ date.year }} à {{ date.hour }}:{{ date.minute }} </p>
   </div>
   <div class="modification" v-if="user.role == 'Admin'">
-    <p>Modifier la date ?</p>
-    <label for="date">Nouvelle date: </label>
-    <input type="datetime-local" name="date" id="date" v-model="newDate"/>
-    <ButtonComp buttonText="Valider" @keydown.enter.stop="updateDate(this.newDate)" @click.stop="updateDate(this.newDate)"/>
+    <p>Modifier la date ? <i class="fa-solid fa-circle-plus" v-if="toggleChange" @click.stop.prevent="changeVisibility"></i><i v-else @click.stop.prevent="changeVisibility" class="fa-solid fa-circle-minus"></i></p>
+    <div v-if="!toggleChange">
+      <label for="date">Nouvelle date: </label>
+      <input type="datetime-local" name="date" id="date" v-model="newDate"/>
+      <ButtonComp buttonText="Valider" @keydown.enter.stop="updateDate(this.newDate)" @click.stop="updateDate(this.newDate)"/>
+    </div>
   </div>
 </template>
 
@@ -18,15 +20,18 @@ export default {
   name: "DateComp",
   data() {
     return {
-      newDate: undefined
+      newDate: undefined,
+      toggleChange: true
     }
   },
   props: {
-    hour: String,
-    minute: String,
-    day: String,
-    month: String,
-    year: String
+    date: {
+      hour: String,
+      minute: String,
+      day: String,
+      month: String,
+      year: String
+    }
   },
   computed: {
     ...mapState(['status', 'user'])
@@ -37,6 +42,13 @@ export default {
   methods: {
     updateDate(date) {
       this.$emit('updateDate', date)
+    },
+    changeVisibility() {
+      if (this.toggleChange == true) {
+        this.toggleChange = false
+      } else {
+        this.toggleChange = true
+      }
     }
   }
 }

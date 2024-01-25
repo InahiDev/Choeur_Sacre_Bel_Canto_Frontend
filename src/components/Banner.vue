@@ -1,14 +1,15 @@
 <template>
   <header>
-    <div>
-      <!--Logo CSBC à insérer-->
-      <h1>Choeur Sacré Bel Canto</h1>
-    </div>
     <div class="menu" >
       <h2>Menu</h2>
       <i class="fa-solid fa-bars" @click="activateMenu()"></i>
       <NavComp v-if="this.menuActive == true"/>
     </div>
+    <div>
+      <!--Logo CSBC à insérer-->
+      <h1>Choeur Sacré Bel Canto</h1>
+    </div>
+
   </header>
 </template>
 

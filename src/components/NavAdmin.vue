@@ -1,5 +1,5 @@
 <template>
-  | <router-link to="/board">Administrateur</router-link>
+  | <router-link to="/admin">Administrateur</router-link>
   
 </template>
 

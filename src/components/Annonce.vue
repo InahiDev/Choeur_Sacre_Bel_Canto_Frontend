@@ -2,7 +2,7 @@
   <section class="annonce">
     <div class="repetition">
       <h3>Prochaine répétition</h3>
-      <DateComp @updateDate="updateRepetitionDate" :day="nextRepetition.day" :month="nextRepetition.month" :year="nextRepetition.year" :hour="nextRepetition.hour" :minute="nextRepetition.minute"/>
+      <DateComp @updateDate="updateRepetitionDate" :date="nextRepetition"/>
     </div>
   </section>
 </template>

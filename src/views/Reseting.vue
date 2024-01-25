@@ -67,10 +67,11 @@ export default {
           })
           .catch((error) => {
             this.successMsg = ''
+            console.log(error)
             if (error.name === "TokenExpiredError") {
               this.errorMsg = "Temps écoulé, veuillez recommencer l'opération."
-            } else if (error.response.data.message === "Need a stronger password, check the rules for it!") {
-              this.errorMsg = "Veuillez entrer un mot de passe plus fort. Vérifiez les règles concernant les mots de passe."
+            } else if (error.response.status === 400) {
+              this.errorMsg = error.response.data.message
             } else {
               this.errorMsg = `La requête a échouée: ${error}`
             }

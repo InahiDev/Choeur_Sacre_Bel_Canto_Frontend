@@ -38,7 +38,6 @@ if (!user) {
 
 const dateFormat = /^20\d{2}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d$/
 function parseDate(newDate) {
-  console.log(newDate)
   if (dateFormat.test(newDate)) {
     let date = {
       year: newDate.split("T")[0].split("-")[0],
@@ -110,6 +109,17 @@ export default createStore({
     },
     SET_REPETITION_DATE(state, date) {
       state.nextRepetition = date
+    },
+    FILL_CONCERT_ARRAY(state, concerts) {
+      state.concerts = concerts
+    },
+    FILL_FILES_LIST(state, files) {
+      state.files = undefined
+      state.files = files
+    },
+    USELESS_COMMIT(state) {
+      user = state.user
+      state.user = user
     }
 
     // REGISTER_EMAIL(state, email) {
@@ -198,6 +208,94 @@ export default createStore({
     updateRepetitionDate: ({commit}, date) => {
       commit('SET_REPETITION_DATE', parseDate(date))
     },
+    getFirstConcerts: ({commit}) => {
+      return new Promise((resolve, reject) => {
+        instance.get('/concert')
+          .then((response) => {
+            commit('FILL_CONCERT_ARRAY', response.data.data)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit('FILL_CONCERT_ARRAY', undefined)
+            reject(error)
+          })
+      })
+
+    },
+    getSpecificFiles: ({commit}, research) => {
+      if (research.type && research.value) {
+        if (research.offset) {
+          return new Promise((resolve, reject) => {
+            instance.get(`/archive/${research.type}/${research.value}?offset=${research.offset}`)
+              .then((response) => {
+                commit('FILL_FILES_LIST', response.data.data)
+                resolve(response)
+              })
+              .catch((error) => {
+                commit('FILL_FILES_LIST', undefined)
+                reject(error)
+              })
+          })
+        } else {
+          return new Promise((resolve, reject) => {
+            instance.get(`/archive/${research.type}/${research.value}`)
+              .then((response) => {
+                commit('FILL_FILES_LIST', response.data.data)
+                resolve(response)
+              })
+              .catch((error) => {
+                commit('FILL_FILES_LIST', undefined)
+                reject(error)
+              })
+          })
+        }
+      } else {
+        commit('FILL_FILES_LIST', undefined)
+      }
+    },
+    extractFile: ({commit}, id) => {
+      commit('USELESS_COMMIT')
+      return new Promise((resolve, reject) => {
+        instance.get(`/archive/id/${id}`)
+          .then((response) => resolve(response))
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
+    searchForLinks: (_, payload) => {
+      let offset = 0
+      if (payload.offset) {
+        offset = payload.offset
+      } else {
+        offset = 0
+      }
+      return new Promise((resolve, reject) => {
+        instance.get(`/${payload.type}?offset=${offset}`)
+          .then((response) => resolve(response))
+          .catch((error) => reject(error))
+      })
+    },
+    addFile: (_, file) => {
+      let req = new FormData()
+      req.append('file', file.file, file.file.name)
+      req.append('type', file.type)
+      if (file.concertId) {
+        req.append('concertId', file.concertId)
+      }
+      if (file.placeId) {
+        req.append('placeId', file.placeId)
+      }
+      if (file.pieceId) {
+        req.append('pieceId', file.pieceId)
+      }
+      console.log(req)
+      return new Promise((resolve, reject) => {
+        instance.post(`/archive`, req)
+          .then((response) => resolve(response))
+          .catch((error) => reject(error))
+      })
+    }
   },
   modules: {
   }

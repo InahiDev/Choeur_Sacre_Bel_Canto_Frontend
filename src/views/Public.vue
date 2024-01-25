@@ -30,6 +30,11 @@
         <p class="corps">Pensez à ramener des stylos!</p>
       </div>
     </section>
+    <section class="concerts">
+      <div class="card" v-for="(concert, idx) in concerts" :key="idx">
+        <ConcertCard :concert="concert"/>
+      </div>
+    </section>
   </body>
   <FooterComp/>
 </template>
@@ -38,12 +43,14 @@
 import { mapState } from 'vuex'
 import FooterComp from "@/components/Footer.vue"
 import AnnonceComp from '@/components/Annonce.vue'
+import ConcertCard from '@/components/Concert.vue'
 
 export default {
   name: "PublicView",
   components: {
     FooterComp,
-    AnnonceComp
+    AnnonceComp,
+    ConcertCard,
   },
   data() {
     return {
@@ -51,7 +58,9 @@ export default {
     }
   },
   beforeMount() {
-
+    this.$store.dispatch('getFirstConcerts')
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error))
   },
   computed: {
     ...mapState(['status', 'user', 'comments', 'concerts', 'pictures'])

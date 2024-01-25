@@ -78,17 +78,25 @@ export default {
       this.mode = 'create'
     },
     createAccount() {
-      this.$store.dispatch('createAccount', {
-        email: this.email,
-        password: this.password,
-        firstName: this.firstName,
-        lastName: this.lastName
-      })
-        .then(() => this.login())
-        .catch((error) => {
-          this.successMsg = ''          
-          this.errorMsg = error.response.data.message
+      if (mailRegex.test(this.email) && this.password && this.firstName && this.lastName) {
+        this.$store.dispatch('createAccount', {
+          email: this.email,
+          password: this.password,
+          firstName: this.firstName,
+          lastName: this.lastName
         })
+          .then(() => this.login())
+          .catch((error) => {
+            this.successMsg = ''          
+            if (error.response.data.message === "User already registered") {
+              this.errorMsg = "Cette adresse possède déjà un compte associé. Connectez-y  vous!"
+            } else {
+              this.errorMsg = error.response.data.message
+            }
+          })
+      } else {
+        this.errorMsg = "Veuillez compléter tous les champs afin de créer un compte!"
+      }
     },
     login() {
       this.$store.dispatch('login', {
