@@ -27,6 +27,7 @@ export default {
       reduce: false
     }
   },
+  emits: ['modifyPieceId'],
   methods: {
     searchPieces() {
       this.offset = 10

@@ -1,40 +1,40 @@
 <template>
   <section class="annonce">
-    <div class="repetition">
-      <h3>Prochaine répétition</h3>
-      <DateComp @updateDate="updateRepetitionDate" :date="nextRepetition"/>
-    </div>
+    <RepetitionComp/>
+    <CourseComp/>
   </section>
 </template>
 
 <script>
-import DateComp from '@/components/Date.vue'
+import RepetitionComp from './RepetitionComp.vue'
+import CourseComp from './CourseComp.vue'
 import { mapState } from 'vuex'
-//const date = /^20[0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9]{3}Z$/
 
 export default {
   name: "AnnonceView",
   data() {
     return {
-      newDate: "",
+      courseCanceled: false,
+      showModifyDate: false,
+      courseErrorMsg: "",
     }
   },
   computed: {
-    ...mapState(['nextRepetition'])
+    ...mapState(['user', 'nextCourse'])
   },
   methods: {
-    parseDate(date) {
-      if (date) {
-        let newDate = {
-          year: date.split('T')[0].split('-')[0],
-          month: date.split('T')[0].split('-')[1],
-          day: date.split('T')[0].split('-')[2],
-          hour: date.split('T')[1].split(':')[0],
-          minute: date.split('T')[1].split(':')[1]
-        }
-        return newDate
-      } else {
-        return undefined
+    modifyCourseDate() {
+      const newDate = document.getElementById('newCourseDate').value
+      if (newDate) {
+        let newCourseDate = this.parseDate(newDate)
+        newCourseDate.month = this.translateMonth(newCourseDate.month)
+        this.$store.dispatch('updateNextCourse', newCourseDate)
+          .then(() => {
+            this.courseErrorMsg = ""
+          })
+          .catch((error) => {
+            this.courseErrorMsg = "Un problème est survenu: " + error
+          })
       }
     },
     updateRepetitionDate(date) {
@@ -44,10 +44,45 @@ export default {
     }
   },
   components: {
-    DateComp
+    CourseComp,
+    RepetitionComp
   }
 }
 </script>
 
 <style lang="scss">
+section {
+  box-sizing: border-box;
+  background-color: $bg-white;
+  width: 95%;
+  margin: 10px;
+  padding: 15px;
+  border-radius: $radius-components;
+  box-shadow: $shadow-section;
+  @include column;
+  row-gap: 15px;
+
+  .subsection {
+    box-sizing: border-box;
+    width: 90%;
+    padding: 10px;
+    border-radius: $radius-controls;
+    box-shadow: $shadow-controls;
+  }
+}
+
+.next {
+  margin: 5px 0;
+  font-size: 1em;
+
+  &__static {
+    font-size: 1.1em;
+  }
+
+  &__dynamic {
+    font-size: 1em;
+    padding: 2px;
+    margin: 5px 0;
+  }
+}
 </style>

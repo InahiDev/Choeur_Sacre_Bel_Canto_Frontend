@@ -19,4 +19,9 @@ export default {
 </script>
 
 <style lang="scss">
+.picture {
+  width: 100%;
+  object-fit: contain;
+  border-radius: $radius-controls;
+}
 </style>

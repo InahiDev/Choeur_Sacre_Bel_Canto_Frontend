@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Store from '../store/index'
 import PublicView from '../views/Public.vue'
 
 const routes = [
@@ -47,6 +48,13 @@ const routes = [
   {
     path: '/connexion',
     name: 'connexion',
+    beforeEnter(to, from, next) {
+      if (Store.state.status === 'private' && Store.state.user.role !== 'None') {
+        next('/account')
+      } else {
+        next()
+      }
+    },
     component: () => import('../views/Connexion.vue'),
     meta: {
       title: "Choeur Sacré Bel Canto | Connexion au compte",
@@ -70,12 +78,42 @@ const routes = [
     path: '/passwordReset',
     name: 'passwordReseting',
     component: () => import('../views/Reseting.vue')
+  },
+  {
+    path: '/account',
+    name: 'personnal',
+    component: () => import('../views/User.vue'),
+    meta: {
+      title: "Choeur Sacré Bel Canto | Page d'informations personnelles",
+      metaTags: [
+        {
+          name: "personnal",
+          content: "Informations personnelles du compte avec lequel vous êtes connectés."
+        }
+      ]
+    }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+function redirectToLoginPage(to, from, next) {
+  if (to.name == ("board" || "search") || to.path == ("/account")) {
+    if (Store.state.status !== "private") {
+      next('/connexion')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+}
+
+router.beforeEach((to, from, next) => {
+  redirectToLoginPage(to, from, next)
 })
 
 export default router

@@ -27,6 +27,7 @@ export default {
       reduce: false
     }
   },
+  emits: ['modifyConcertId'],
   methods: {
     searchConcerts() {
       this.offset = 10

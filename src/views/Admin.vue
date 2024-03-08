@@ -1,17 +1,17 @@
 <template>
-  <div class="concerts">
-    <div class="container">
-      <h3>Concerts passés</h3>
-      <h3>Concerts à venir</h3>
-    </div>
-  </div>
-  <AddConcert/>
-  <AddFile/>
+  <AdminConcert/>
+  <AdminPiece/>
+  <AdminPlace/>
+  <AdminFile/>
+  <AdminMember/>
 </template>
 
 <script>
-import AddFile from "@/components/AddFile.vue"
-import AddConcert from "@/components/AddConcert.vue"
+import AdminFile from "@/components/AdminFile.vue"
+import AdminConcert from "@/components/AdminConcert.vue"
+import AdminPlace from "@/components/AdminPlace.vue"
+import AdminMember from '@/components/AdminMember.vue'
+import AdminPiece from '@/components/AdminPiece.vue'
 
 export default {
   name: "AdminView",
@@ -24,8 +24,11 @@ export default {
     
   },
   components: {
-    AddFile,
-    AddConcert
+    AdminFile,
+    AdminConcert,
+    AdminPlace,
+    AdminMember,
+    AdminPiece
   },
   methods: {
 

@@ -21,9 +21,9 @@
           <input v-if="mode == 'create'" v-model.lazy="lastName" id="lastName" placeholder="Nom"/>
         </form>
       </div>
-      <ButtonComp v-if="mode == 'login'" buttonText="Se Connecter" @keydown.enter.stop="login()" @click.stop="login()"/>
-      <ButtonComp v-else-if="mode == 'create'" buttonText="S'enregistrer" @keydown.enter.stop="createAccount()" @click.stop="createAccount()"/>
-      <ButtonComp v-else-if="mode == 'resetPassword'" buttonText="Recevoir un email" @keydown.enter.stop="resetPassword()" @click.stop="resetPassword()"/>
+      <ButtonComp v-if="mode == 'login'" text="Se Connecter" @keydown.enter.stop="login()" @click.stop="login()"/>
+      <ButtonComp v-else-if="mode == 'create'" text="S'enregistrer" @keydown.enter.stop="createAccount()" @click.stop="createAccount()"/>
+      <ButtonComp v-else-if="mode == 'resetPassword'" text="Recevoir un email" @keydown.enter.stop="resetPassword()" @click.stop="resetPassword()"/>
       <p v-if="mode != 'resetPassword'" class="card__switch">Mot de passe perdu ? <span class="card__switch" @click.stop="switchToReset()">Réinitialisez votre mot de passe!</span></p>
       <p v-else class="card__switch"><span class="card__switch" @click.stop="switchToLogin()">Se Connecter</span> | <span class="card__switch" @click.stop="switchToCreate()">S'enregistrer</span></p>
     </div>
@@ -55,7 +55,7 @@ export default {
     this.relogFromLocal()
   },
   computed: {
-    ...mapState(['status', 'user'])
+    ...mapState(['status', 'user', 'tokenValid'])
   },
   components: {
     ButtonComp
@@ -99,7 +99,8 @@ export default {
       }
     },
     login() {
-      this.$store.dispatch('login', {
+      if (this.email && this.password) {
+        this.$store.dispatch('login', {
         email: this.email,
         password: this.password
       })
@@ -114,6 +115,10 @@ export default {
           this.successMsg = ''
           this.errorMsg = error.response.data.message
         })
+      } else {
+        this.successMsg = ''
+        this.errorMsg = "Veuillez remplir les champs email et password pour vous connecter."
+      }
     },
     resetPassword() {
       if (this.email) {
@@ -131,21 +136,27 @@ export default {
       }
     },
     relogFromLocal() {
-      let user = localStorage.getItem('userCSBC')
+      let userToken = localStorage.getItem('userCSBC')
       try {
-        if (user) {
-          user = JSON.parse(user)
-          this.$store.dispatch('relogFromToken', user.token)
+        if (userToken) {
+          userToken = JSON.parse(userToken)
+          this.$store.dispatch('relogFromToken', {
+            token: userToken,
+            validity: this.$store.state.tokenValid
+          })
             .then((response) => {
-              this.email = response.data.data.email
-              this.firstName = response.data.data.firstName
-              this.lastName = response.data.data.lastName
-              this.errorMsg = ''
-              this.successMsg = "Utilisateur reconnecté"
+              if (response === 'unvalidToken') {
+                this.succesMsg = ""
+                this.errorMsg = "Reconnection impossible."
+
+              } else {
+                this.errorMsg = ''
+                this.successMsg = "Utilisateur reconnecté"
+              }
             })
             .catch((error) => {
               this.successMsg = ''
-              this.errorMsg = "Reconnection impossible: " + error.response.data.message
+              this.errorMsg = "Reconnection impossible: " + error.response?.data?.message
             })
         } else {
           this.successMsg = ''
@@ -153,10 +164,10 @@ export default {
           throw new Error('User empty in localStorage')
         } 
       } catch(error) {
-        this.$store.state.connectionStatus = 'relog_not_possible'
+        this.$store.state.tokenValid = false
         localStorage.removeItem('userCSBC')
         this.successMsg = ''
-        this.errorMSg = "Reconnection impossible, vérifiez le localStorage: " + error
+        this.errorMSg = "Reconnection impossible, vérifiez le localStorage: " + error.response?.data?.message
       }
     }
   }

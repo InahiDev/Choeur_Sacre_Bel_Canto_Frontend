@@ -27,6 +27,7 @@ export default {
       reduce: false
     }
   },
+  emits: ['modifyPlaceId'],
   methods: {
     searchPlaces() {
       this.offset = 10

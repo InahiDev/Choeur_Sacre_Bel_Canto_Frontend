@@ -1,0 +1,30 @@
+//Variables de couleurs
+$color-primary: #000;
+$color-secondary: #002060;
+$color-tertiary: #369;
+$color-quarternary: #7899C2;
+$color-white: #FFF;
+
+//Background-colors
+$bg-main-color: #7899C2;
+$bg-white: #FFF;
+$bg-light-grey: #F6F6F6;
+$bg-dark-blue: #002060;
+
+//Radius communs
+$radius-main: 20px;
+$radius-components: 15px;
+$radius-controls: 10px;
+$radius-small: 5px;
+
+//Box-shadow
+$shadow-section: 4px 4px 5px 2px $bg-main-color;
+$shadow-components: 2px 2px 4px 2px $bg-main-color;
+$shadow-controls: 1px 1px 2px 1px $bg-main-color;
+
+//Mediaqueries map-breakpoints
+$breakpoints: (
+  tablet-min: 768px,
+  tablet-max: 991px,
+  desktop: 992px,
+);

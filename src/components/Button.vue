@@ -1,12 +1,12 @@
 <template>
-  <button>{{ buttonText }}</button>
+  <button>{{ text }}</button>
 </template>
 
 <script>
 export default {
   name: "ButtonComp",
   props: {
-    buttonText: String,
+    text: String,
   }
 }
 </script>
