@@ -1,6 +1,7 @@
 <template>
-  <section>
+  <section class="admin__section">
     <ConcertAdd @newConcert="getNewConcert"/>
+    <div class="separation"></div>
     <ConcertModify ref="ConcertModify"/>
   </section>
 </template>
@@ -27,6 +28,16 @@ export default {
 }
 </script>
 
-
 <style lang="scss">
+.admin {
+  &__section {
+    gap: 10px;
+  }
+}
+
+.separation {
+  background-color: $color-secondary;
+  width: 100%;
+  height: 1px;
+}
 </style>

@@ -1,5 +1,6 @@
 <template>
   <section class="parent">
+    <h3>Ce que vous en avez pensé</h3>
     <CommentUnit @deleted="reloadComments()" v-for="comment of this.comments" :key="comment.id" :comment="comment"/>
     <CommentAdd @newComment="reloadComments()"/>
     <i v-if="this.unvalidatedComments" class="fa-solid fa-triangle-exclamation"></i>

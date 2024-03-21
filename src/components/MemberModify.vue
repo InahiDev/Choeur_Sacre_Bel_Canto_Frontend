@@ -1,9 +1,9 @@
 <template>
-  <h3>Modifier les membres :   <i v-if="!this.showModify" class="fa-solid fa-circle-plus" @click.stop="showMenu()"></i>  <i v-else class="fa-solid fa-circle-minus" @click.stop="showMenu()"></i></h3>
-  <div v-if="this.showModify">
+  <h3 class="admin__title">Modifier les membres :   <i v-if="!this.showModify" class="fa-solid fa-circle-plus" @click.stop="showMenu()"></i>  <i v-else class="fa-solid fa-circle-minus" @click.stop="showMenu()"></i></h3>
+  <div class="admin__modify__section admin__modify__section--member" v-if="this.showModify">
     <MemberModifyUnit v-for="member of members" :key="member.id" v-bind:member="member" @updated="getMembers()" @accountDeleted="getMembers()"/>
-    <ChargeNext @chargeNext="chargeNext($event)" @error="errorCharge($event)" name="membres" action="getMembers" :offset="this.offset"/>
-    <ChargePrevious v-if="this.offset > 10" @chargePrevious="chargePrevious($event)" @error="chargggeError($event)" type="membres" action="getMembers" :offset="this.offset"/>
+    <ChargeNext class="admin__modify__controls admin__modify__controls--next" @chargeNext="chargeNext($event)" @error="errorCharge($event)" name="membres" action="getMembers" :offset="this.offset"/>
+    <ChargePrevious class="admin__modify__controls admin__modify__controls--previous" v-if="this.offset > 10" @chargePrevious="chargePrevious($event)" @error="chargggeError($event)" type="membres" action="getMembers" :offset="this.offset"/>
     <p v-if="this.errorMsg">{{ errorMsg }}</p>
 </div>
 </template>

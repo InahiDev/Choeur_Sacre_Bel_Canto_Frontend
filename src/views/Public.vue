@@ -2,16 +2,15 @@
   <main>
     <AnnonceComp/>
     <section class="concerts">
+      <h3 class="section__title--concerts">Nos concerts à venir</h3>
       <ConcertCard v-for="concert in concerts" :key="concert.id" :concert="concert"/>
     </section>
     <CommentComp/>
   </main>
-  <FooterComp/>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import FooterComp from "@/components/Footer.vue"
 import AnnonceComp from '@/components/Annonce.vue'
 import ConcertCard from '@/components/ConcertCard.vue'
 import CommentComp from '@/components/CommentComp.vue'
@@ -19,7 +18,6 @@ import CommentComp from '@/components/CommentComp.vue'
 export default {
   name: "PublicView",
   components: {
-    FooterComp,
     AnnonceComp,
     ConcertCard,
     CommentComp
@@ -50,9 +48,15 @@ main {
   border-radius: 20px;
   background-color: $bg-light-grey;
   @include column;
+  gap: 10px;
 
   .concerts {
     @include column;
+  }
+
+  .section__title--concerts {
+    margin: 0;
+    font-size: 1.3em;
   }
 }
 

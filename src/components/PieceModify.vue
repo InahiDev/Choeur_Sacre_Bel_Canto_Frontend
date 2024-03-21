@@ -1,10 +1,10 @@
 <template>
-  <h3>Modifier un morceau : <i v-if="!this.showModify" class="fa-solid fa-circle-plus" @click.stop="showMenu()"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showMenu()"></i></h3>
-  <div v-if="this.showModify">
+  <h3 class="admin__title">Modifier un morceau : <i v-if="!this.showModify" class="fa-solid fa-circle-plus" @click.stop="showMenu()"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showMenu()"></i></h3>
+  <div class="admin__modify__section admin__modify__section--piece" v-if="this.showModify">
     <PieceModifyUnit v-for="piece of pieces" :key="piece.id" v-bind:piece="piece" @updated="getPieces()" @deleted="getPieces()"/>
-    <p v-if="this.errorMsg"> {{ errorMsg }} </p>
-    <ChargeNext @chargeNext="chargeNext($event)" @error="errorCharge($event)" name="morceaux" action="getPieces" :offset="this.offset"/>
-    <ChargePrevious v-if="this.offset > 10" @chargePrevious="chargePrevious($event)" @error="errorCharge($event)" type="morceaux" action="getPieces" :offset="this.offset"/>
+    <ChargeNext class="admin__modify__controls admin__modify__controls--next" @chargeNext="chargeNext($event)" @error="errorCharge($event)" name="morceaux" action="getPieces" :offset="this.offset"/>
+    <ChargePrevious class="admin__modify__controls admin__modify__controls--previous" v-if="this.offset > 10" @chargePrevious="chargePrevious($event)" @error="errorCharge($event)" type="morceaux" action="getPieces" :offset="this.offset"/>
+    <p class="errorMsg" v-if="this.errorMsg"> {{ errorMsg }} </p>
   </div>
 </template>
 
@@ -20,7 +20,8 @@ export default {
     return {
       showModify: false,
       offset: 10,
-      storedPieces: undefined
+      storedPieces: undefined,
+      errorMsg: ""
     }
   },
   mounted() {
@@ -71,4 +72,5 @@ export default {
 </script>
 
 <style lang="scss">
+
 </style>

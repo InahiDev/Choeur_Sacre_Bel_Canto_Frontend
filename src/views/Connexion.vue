@@ -1,35 +1,37 @@
 <template>
-  <div class="centered">
-    <div class="card">
-      <div v-if="mode == 'resetPassword'" class="mode__container">
-        <h2 class="card__title">Réinitialisation du mot de passe</h2>
-        <p class="card__subtitle">Recevez un mail afin de pouvoir modifier votre mot de passe.</p>
+  <main>
+    <section class="connexion">
+      <div v-if="mode == 'resetPassword'" class="connexion__mode connexion__mode--reset">
+        <h2>Réinitialisation</h2>
+        <p>Recevez un mail afin de pouvoir modifier votre mot de passe.</p>
       </div>
-      <div v-else-if="mode == 'login'" class="mode__container">
-        <h2 class="card__title">Connexion</h2>
-        <p class="card__subtitle">Vous ne possédez pas de compte ?<br/><span class="card__switch" @click.stop="switchToCreate()">Créez un compte!</span></p>
+      <div v-else-if="mode == 'login'" class="connexion__mode connexion__mode--login">
+        <h2>Connexion</h2>
+        <p class="connexion__mode__switch">Vous ne possédez pas de compte ?<span class="connexion__mode__switch__link" @click.stop="switchToCreate()">Créez un compte!</span></p>
       </div>
-      <div v-else-if="mode == 'create'" class="mode__container">
-        <h2 class="card__title">Inscription</h2>
-        <p class="card__subtitle">Vous possédez déjà un compte ?<br/><span class="card__switch" @click.stop="switchToLogin()">Se connecter avec vos identifiants</span></p>
+      <div v-else-if="mode == 'create'" class="connexion__mode connexion__mode--create">
+        <h2>Inscription</h2>
+        <p class="connexion__mode__switch">Vous possédez déjà un compte ?<span class="connexion__mode__switch__link" @click.stop="switchToLogin()">Se connecter avec vos identifiants</span></p>
       </div>
-      <div class="logForm">
-        <form>
-          <input v-model.lazy="email" id="mail" type="email" placeholder="Adresse Email"/>
+        <form class="connexion__form">
+          <label for="email">Adresse email</label>
+          <input v-model.lazy="email" id="email" type="email" placeholder="Adresse Email"/>
+          <label for="password" v-if="mode != 'resetPassword'">Mot de passe</label>
           <input v-if="mode != 'resetPassword'" v-model.lazy="password" id="password" type="password" placeholder="Mot de Passe"/>
+          <label for="firstName" v-if="mode == 'create'">Prénom</label>
           <input v-if="mode == 'create'" v-model.lazy="firstName" id="firstName" placeholder="Prénom"/>
+          <label for="lastName" v-if="mode == 'create'">Nom de famille</label>
           <input v-if="mode == 'create'" v-model.lazy="lastName" id="lastName" placeholder="Nom"/>
         </form>
-      </div>
-      <ButtonComp v-if="mode == 'login'" text="Se Connecter" @keydown.enter.stop="login()" @click.stop="login()"/>
-      <ButtonComp v-else-if="mode == 'create'" text="S'enregistrer" @keydown.enter.stop="createAccount()" @click.stop="createAccount()"/>
-      <ButtonComp v-else-if="mode == 'resetPassword'" text="Recevoir un email" @keydown.enter.stop="resetPassword()" @click.stop="resetPassword()"/>
-      <p v-if="mode != 'resetPassword'" class="card__switch">Mot de passe perdu ? <span class="card__switch" @click.stop="switchToReset()">Réinitialisez votre mot de passe!</span></p>
-      <p v-else class="card__switch"><span class="card__switch" @click.stop="switchToLogin()">Se Connecter</span> | <span class="card__switch" @click.stop="switchToCreate()">S'enregistrer</span></p>
-    </div>
-    <p class="success" v-if="this.successMsg && !this.errorMsg">{{ successMsg }}<span v-if="this.successMsg == 'Utilisateur reconnecté'">, retourner à la <a href="./">page d'accueil</a> ?</span></p>
-    <p class="error" v-else> {{ errorMsg }} </p>
-  </div>
+      <ButtonComp v-if="mode == 'login'" text="Se Connecter" @keydown.enter.stop="login()" @click.stop="login()" class="connexion__button connexion__button--login"/>
+      <ButtonComp v-else-if="mode == 'create'" text="S'enregistrer" @keydown.enter.stop="createAccount()" @click.stop="createAccount()" class="connexion__button connexion__button--create"/>
+      <ButtonComp v-else-if="mode == 'resetPassword'" text="Recevoir un email" @keydown.enter.stop="resetPassword()" @click.stop="resetPassword()" class="connexion__button connexion__button--reset"/>
+      <p v-if="mode != 'resetPassword'" class="connexion__mode__switch">Mot de passe perdu ? <span class="connexion__mode__switch__link" @click.stop="switchToReset()">Réinitialisez votre mot de passe!</span></p>
+      <p v-else class="connexion__mode__switch"><span class="connexion__mode__switch__link connexion__mode__switch__link--rtl" @click.stop="switchToLogin()">Se Connecter</span> | <span class="connexion__mode__switch__link connexion__mode__switch__link--rtc" @click.stop="switchToCreate()">S'enregistrer</span></p>
+    </section>
+    <p class="" v-if="this.successMsg && !this.errorMsg">{{ successMsg }}<span v-if="this.successMsg == 'Utilisateur reconnecté'">, retourner à la <a href="./">page d'accueil</a> ?</span></p>
+    <p class="" v-else> {{ errorMsg }} </p>
+  </main>
 </template>
 
 <script>
@@ -70,12 +72,18 @@ export default {
     },
     switchToReset() {
       this.mode = 'resetPassword'
+      this.errorMsg = ''
+      this.successMsg = ''
     },
     switchToLogin() {
       this.mode = 'login'
+      this.errorMsg = ''
+      this.successMsg = ''
     },
     switchToCreate() {
       this.mode = 'create'
+      this.errorMsg = ''
+      this.successMsg = ''
     },
     createAccount() {
       if (mailRegex.test(this.email) && this.password && this.firstName && this.lastName) {
@@ -175,5 +183,65 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.connexion {
+  box-sizing: border-box;
+  width: 95%;
+  
+  h2 {
+    font-size: 1.6em;
+  }
+
+
+  &__mode {
+    @include column;
+    gap: 10px;
+    width: 100%;
+
+    &__switch {
+      width: 100%;
+
+      &__link {
+        display: inline-block;
+        text-decoration: underline;
+        cursor: pointer;
+        width: 100%;
+
+        &--rtc, &--rtl {
+          width: 40%;
+        }
+      }
+    }
+  }
+
+  &__form {
+    width: 100%;
+    @include column;
+    gap: 10px;
+
+    label {
+      font-size: 1.1em;
+    }
+
+    input {
+      padding: 5px 10px;
+      border-radius: $radius-controls;
+
+      &::placeholder {
+        font-family: "Madimi One", Avenir, Helvetica, Arial, sans-serif;
+      }
+    }
+  }
+
+  &__button {
+    width: 65%;
+    padding: 5px;
+    background-color: $bg-dark-blue;
+    color: #FFF;
+
+    &--reset {
+      width: 80%;
+    }
+  }
+}
 </style>

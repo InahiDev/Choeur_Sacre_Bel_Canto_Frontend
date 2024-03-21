@@ -1,5 +1,5 @@
 <template>
-  <p><i class="fa-solid fa-circle-minus" @click.stop.prevent="chargePrevious()"></i> Charger les {{ this.type }} précédents ?</p>
+  <p class="previous" @click.stop.prevent="chargePrevious()"><i class="fa-solid fa-circle-minus"></i> Charger les {{ this.type }} précédents ?</p>
 </template>
 
 <script>

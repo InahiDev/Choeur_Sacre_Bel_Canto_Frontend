@@ -1,15 +1,26 @@
 <template>
-  <form>
-    <label for="fileAddFile">Sélectionner un fichier :</label>
-    <input type="file" if="fileAddFile" accept="'application/pdf','application/x-rar-compressed','application/zip''application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation'" v-on:change="modifyFileField()"/><br/>
-    <label for="fileAddType">Spécifier le type du document :</label>
-    <input type="text" id="fileAddType" v-model.lazy="newFile.type"/><br/>
-    <input type="submit" value="Soumettre" @click.stop.prevent="addFile()"/>
-  </form>
-  <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkTo.place" :file="this.newFile" name="lieu" type="place" :array="this.places"/>
-  <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkTo.piece" :file="this.newFile" name="morceau" type="piece" :array="this.pieces"/>
-  <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkTo.concert" :file="this.newFile" name="concert" type="concert" :array="this.concerts"/>
-  <p v-if="this.errorMsg">{{ errorMsg }}</p>
+  <div class="admin__add__section">
+    <form class="admin__add__section--text">
+      <div class="formUnit formUnit--file formUnit--file--file">
+        <label v-if="!newFile.file"  for="fileAddFile">Sélectionner un fichier : <i class="fa-solid fa-file-circle-plus"></i></label>
+        <label v-else for="fileAddFile">Changer de document : <i class="fa-solid fa-file-circle-plus"></i></label>
+        <input type="file" id="fileAddFile" accept="'application/pdf','application/x-rar-compressed','application/zip''application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation'" v-on:change="modifyFileField()"/>
+        <p class="formUnit--file--fileName" v-if="newFile.file"> {{ newFile.file.name }} </p>
+      </div>
+      <div class="formUnit formUnit--file formUnit--file--type">
+        <label for="fileAddType">Spécifier le type du document :</label>
+        <input type="text" id="fileAddType" v-model.lazy="newFile.type"/>
+      </div>
+      <input type="submit" value="Soumettre" @click.stop.prevent="addFile()"/>
+    </form>
+    <div class="admin__add__section--links">
+      <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkTo.place" :file="this.newFile" name="lieu" type="place" :array="this.places" action="getPlaces"/>
+      <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkTo.piece" :file="this.newFile" name="morceau" type="piece" :array="this.pieces" action="getPieces"/>
+      <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkTo.concert" :file="this.newFile" name="concert" type="concert" :array="this.concerts" action="getConcerts"/>
+    </div>
+    <p v-if="this.errorMsg">{{ errorMsg }}</p>
+  </div>
+
 </template>
 
 <script>
@@ -90,4 +101,46 @@ export default {
 </script>
 
 <style lang="scss">
+.admin {
+  &__add {
+    &__section {
+      &--text {
+        .formUnit {
+          &--file{
+            width: 100%;
+            
+            &--file {
+              @include column;
+              input[type="file"] {
+                width: 0;
+                height: 0;
+                position:absolute;
+              }
+
+
+            }
+            &--fileName {
+              width: 100%;
+              box-sizing: border-box;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            &--type {
+              @include column;
+            }
+
+
+          }
+        }
+      }
+      &--links {
+        @include column;
+        width: 100%;
+        gap: 5px;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
 </style>

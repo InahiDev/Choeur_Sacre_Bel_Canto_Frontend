@@ -1,35 +1,47 @@
 <template>
-  <div class="modify">
-    <form :id="'concert' + concert.id">
-      <label for="city">Ville: </label>
-      <input :placeholder="concert.city" name="city" type="text" :id="'concertCity' + concert.id" @change="updateCity(concert.id)"/><br/>
-      <label for="zip">Code postal:</label>
-      <input :placeholder="concert.zip" name="zip" type="text" :id="'concertZip' + concert.id" @change="updateZip(concert.id)"/><br/>
-      <label for="name">Nom:</label>
-      <input :placeholder="concert.name" name="name" type="text" :id="'concertName' + concert.id" @change="updateName(concert.id)"/><br/>
-      <label for="date">Date:</label>
-      <input :value="concert.date.split('.')[0]" name="date" type="datetime-local" :id="'concertDate' + concert.id" @change="updateDate(concert.id)"/><br/>
-      <label for="type">Type:</label>
-      <select name="type" :placeholder="concert.type" :id="'concertType' + concert.id" @change="updateType(concert.id)">
-        <option value="Récital">Récital</option>
-        <option value="Classique">Classique</option>
-      </select><br/>
-      <label for="price">Prix:</label>
-      <input :placeholder="concert.price" name="price" type="number" :id="'concertPrice' + concert.id" @change="updatePrice(concert.id)"/><br/>
+  <div class="modify__menu modify__menu--concert">
+    <form class="modify__menu__text modify__menu__text--concert" :id="'concert' + concert.id">
+      <div class="formUnit formUnit--modify formUnit--modify--city">
+        <label for="city">Ville: </label>
+        <input :placeholder="concert.city" name="city" type="text" :id="'concertCity' + concert.id" @change="updateCity(concert.id)"/>
+      </div>
+      <div class="formUnit formUnit--modify formUnit--modify--zip">
+        <label for="zip">Code postal:</label>
+        <input :placeholder="concert.zip" name="zip" type="text" :id="'concertZip' + concert.id" @change="updateZip(concert.id)"/>
+      </div>
+      <div class="formUnit formUnit--modify formUnit--modify--name">
+        <label for="name">Nom:</label>
+        <input :placeholder="concert.name" name="name" type="text" :id="'concertName' + concert.id" @change="updateName(concert.id)"/>
+      </div>
+      <div class="formUnit formUnit--modify formUnit--modify--date">
+        <label for="date">Date:</label>
+        <input :value="concert.date.split('.')[0]" name="date" type="datetime-local" :id="'concertDate' + concert.id" @change="updateDate(concert.id)"/>
+      </div>
+      <div class="formUnit formUnit--modify formUnit--modify--type">
+        <label for="type">Type:</label>
+        <select name="type" :placeholder="concert.type" :id="'concertType' + concert.id" @change="updateType(concert.id)">
+          <option value="Récital">Récital</option>
+          <option value="Classique">Classique</option>
+        </select>        
+      </div>
+      <div class="formUnit formUnit--modify formUnit--modify--price">
+        <label for="price">Prix:</label>
+        <input :placeholder="concert.price" name="price" type="number" :id="'concertPrice' + concert.id" @change="updatePrice(concert.id)"/>
+      </div>
       <input type="submit" :disabled="!this.updateTextReady" :id="'concertSubmit' + concert.id" value="Mettre à jour" @click.stop.prevent="modifyText()"/>
       <p v-if="this.textErrorMsg">{{ textErrorMsg }}</p>
     </form>
-    <p v-if="!this.showPictureMenu"><span v-if="concert.picture">Modifier la photo? </span><span v-else>Rajouter une photo? </span><i @click.stop.prevent="pictureMenu()" class="fa-solid fa-circle-plus"></i></p>
-    <div v-else>
-      <p>Réduire le menu photo ? <i @click.stop.prevent="pictureMenu()" class="fa-solid fa-circle-minus"></i></p>
-      <form>
-        <label for="picture">Photo: </label>
+    <p class="modify__menu__picture--show" v-if="!this.showPictureMenu"><span v-if="concert.picture">Modifier la photo? </span><span v-else>Rajouter une photo? </span><i @click.stop.prevent="pictureMenu()" class="fa-solid fa-circle-plus"></i></p>
+    <div class="modify__menu__picture" v-else>
+      <p class="modify__menu__picture--show">Réduire le menu photo ? <i @click.stop.prevent="pictureMenu()" class="fa-solid fa-circle-minus"></i></p>
+      <form class="modify__menu__picture__form">
+        <label :for="'concertPicture' + concert.id">Télécharger une photo <i class="fa-solid fa-circle-plus"></i></label>
         <input type="file" accept="'image/jpeg', 'image/jpg', 'image/png'" :id="'concertPicture' + concert.id" name="picture" @change="updatePicture(concert.id)"/>
-        <div v-if="this.imagePreview">
+        <div class="modify__menu__picture__form__container" v-if="this.imagePreview">
           <img :src="this.imagePreview" />
           <p>Supprimer la photo? <i fa-solid class="fa-solid fa-circle-minus" @click.stop="cancelPreview(concert.id)"></i></p>
         </div>
-        <label for="alt">Légende obligatoire: </label>
+        <label for="alt">Légende :</label>
         <input v-if="concert.picture?.alt" :placeholder="concert.picture.alt" :id="'concertPictureAlt' + concert.id" name="alt" @change="updateAlt(concert.id)"/>
         <input v-else type="text" :id="'concertPictureAlt' + concert.id" name="alt" @change="updateAlt(concert.id)"/>
         <input type="submit" :disabled="!this.updateImageReady" value="Mettre à jour la photo" @click.stop.prevent="modifyPicture()"/>
@@ -193,4 +205,70 @@ export default {
 </script>
 
 <style lang="scss">
+
+
+.modify__menu {
+  &.modify__menu--concert {
+    width: 120%;
+    top: 15px;
+  }
+
+  &__text {
+    @include column;
+    gap: 5px;
+    width: 100%;
+  }
+  
+  .formUnit {
+    &--modify {
+      &--zip {
+        input {
+          max-width: 140px;
+        }
+      }
+
+      &--date {
+        input {
+          text-align: justify;
+        }
+      }
+    }
+  }
+  &__picture {
+    @include column;
+    width: 100%;
+    box-sizing: border-box;
+
+    &--show {
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    &__form {
+      width: 100%;
+      @include column;
+      gap: 5px;
+
+      input[type="file"] {
+        width: 0;
+        height: 0;
+        position:absolute;
+      }
+
+      &__container {
+        width: 100%;
+        @include column;
+        gap: 5px;
+
+
+        img {
+          width: 100%;
+          object-fit: contain;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+}
 </style>

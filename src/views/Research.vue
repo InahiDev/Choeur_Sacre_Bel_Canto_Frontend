@@ -1,7 +1,12 @@
 <template>
-  <h2>Bienvenue sur la page de recherche dans la base de données de la chorale.</h2>
-  <FileResearch @results="displayResearchResults($event)" @error="cleanFiles()"/>
-  <FileUnit v-for="file of this.displayedFiles" :key="file.id" :file="file"/>
+  <main>
+    <h2>Rechercher des documents</h2>
+    <FileResearch ref="FileResearch" @results="displayResearchResults($event)" @error="cleanFiles()"/>
+    <section class="section--researchFiles" v-if="this.displayedFiles">
+      <FileUnit @fileUpdated="reloadData()" v-for="file of this.displayedFiles" :key="file.id" :file="file"/>
+    </section>
+  </main>
+
 </template>
 
 <script>
@@ -29,11 +34,18 @@ export default {
     },
     cleanFiles() {
       this.displayedFiles = undefined
-
+    },
+    reloadData() {
+      console.log('le emits est arrivé jusque là')
+      this.$refs.FileResearch.reloadData()
     }
   }
 }
 </script>
 
 <style lang="scss">
+h2 {
+  font-size: 1.5em;
+  margin-top: 5px;
+}
 </style>

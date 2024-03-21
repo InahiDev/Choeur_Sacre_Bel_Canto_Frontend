@@ -1,5 +1,5 @@
 <template>
-  <p><i class="fa-solid fa-circle-plus" @click.stop.prevent="chargeNext()"></i> Charger les {{ this.name }} suivants ?</p>
+  <p @click.stop.prevent="chargeNext()"><i class="fa-solid fa-circle-plus"></i> Charger les {{ this.name }} suivants ?</p>
 </template>
 
 <script>

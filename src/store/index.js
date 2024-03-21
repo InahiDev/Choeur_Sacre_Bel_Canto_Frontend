@@ -444,32 +444,30 @@ export default createStore({
           .catch((error) => reject(error))
       })
     },
-    addConcert: (_, concert) => {
-      if (concert.picture?.file) {
-        let req = new FormData()
-        req.append('picture', concert.picture.file, concert.picture.name)
-        req.append('city', concert.city)
-        req.append('name', concert.name)
-        req.append('zip', concert.zip)
-        req.append('date', concert.date)
-        req.append('type', concert.type)
-        if (concert.price) {
-          req.append('price', concert.price)
-        }
-        req.append('alt', concert.picture.alt)
-        return new Promise((resolve, reject) => {
-          instance.post('/concert', req)
-            .then((response) => resolve(response))
-            .catch((error) => reject(error))
-        })
-      } else {
-        delete concert.picture
-        return new Promise((resolve, reject) => {
-          instance.post(`/concert`, concert)
-            .then((response) => resolve(response))
-            .catch((error) => reject(error))
-        })
+    addConcertTextual: (_, concert) => {
+      return new Promise((resolve, reject) => {
+        instance.post('/concert', concert)
+          .then((response) => resolve(response))
+          .catch((error) => reject(error))
+      })
+    },
+    addConcertWithPicture: (_, concert) => {
+      let req = new FormData()
+      req.append('picture', concert.picture.file, concert.picture.name)
+      req.append('city', concert.city)
+      req.append('zip', concert.zip)
+      req.append('name', concert.name)
+      req.append('date', concert.date)
+      req.append('type', concert.type)
+      if (concert.price) {
+        req.append('price', concert.price)
       }
+      req.append('alt', concert.picture.alt)
+      return new Promise((resolve, reject) => {
+        instance.post('/concert', req)
+          .then((response) => resolve(response))
+          .catch((error) => reject(error))
+      })
     },
     getConcerts: ({commit}, payload) => {
       return new Promise((resolve, reject) => {
@@ -735,6 +733,32 @@ export default createStore({
         commit('CHANGE_COURSE_CANCEL', boolean)
         resolve(this.state.isCourseCanceled)
       })
+    },
+    updateFile(_, payload) {
+      if (payload.file.file.originalName) {
+        let req = new FormData()
+        req.append('file', payload.file.file.data, payload.file.file.originalName)
+        req.append('type', payload.file.type)
+        req.append('placeId', payload.file.placeId)
+        req.append('pieceId', payload.file.pieceId)
+        req.append('concertId', payload.file.concertId)
+        return new Promise((resolve, reject) => {
+          instance.put(`/archive/${payload.id}`, req)
+            .then((response) => resolve(response))
+            .catch((error) => reject(error))
+        })
+      } else {
+        //delete payload.file.file
+        let updateObject = {
+          ...payload.file
+        }
+        delete updateObject.file
+        return new Promise((resolve, reject) => {
+          instance.put(`/archive/${payload.id}`, updateObject)
+            .then((response) => resolve(response))
+            .catch((error) => {reject(error)})
+        })
+      }
     }
   },
   modules: {

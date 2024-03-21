@@ -1,14 +1,22 @@
 <template>
-  <div>
-    <form :id="'place' + place.id">
-      <label for="city">Ville: </label>
-      <input name="city" type="text" :placeholder="place.city" :id="'placeCity' + place.id" @change="modifyCity(place.id)"/><br/>
-      <label for="zip">Code postal: </label>
-      <input name="zip" type="text" :placeholder="place.zip" :id="'placeZip' + place.id" @change="modifyZip(place.id)"/><br/>
-      <label for="name">Nom du lieu: </label>
-      <input name="name" type="text" :placeholder="place.name" :id="'placeName' + place.id" @change="modifyName(place.id)"/><br/>
-      <label for="type">Type de lieu: </label>
-      <input name="type" type="text" :placeholder="place.type" :id="'placeType' + place.id" @change="modifyType(place.id)"/><br/>
+  <div class="modify__menu modify__menu--place">
+    <form class="modify__menu__text modify__menu__text--place" :id="'place' + place.id">
+      <div class="formUnit formUnit--modify formUnit--place--city">
+        <label for="city">Ville :</label>
+        <input name="city" type="text" :placeholder="place.city" :id="'placeCity' + place.id" @change="modifyCity(place.id)"/>
+      </div>
+      <div class="formUnit formUnit--modify formUnit--place--zip">
+        <label for="zip">Code postal :</label>
+        <input name="zip" type="text" :placeholder="place.zip" :id="'placeZip' + place.id" @change="modifyZip(place.id)"/>     
+      </div>
+      <div class="formUnit formUnit--modify formUnit--place--name">
+        <label for="name">Nom :</label>
+        <input name="name" type="text" :placeholder="place.name" :id="'placeName' + place.id" @change="modifyName(place.id)"/>  
+      </div>
+      <div class="formUnit formUnit--modify formUnit--place--type">
+        <label for="type">Type :</label>
+        <input name="type" type="text" :placeholder="place.type" :id="'placeType' + place.id" @change="modifyType(place.id)"/>
+      </div>
       <input type="submit" :disabled="!this.updateReady" value="Mettre à jour" @click.stop.prevent="modifyPlace()"/>
     </form>
     <p v-if="this.errorMsg">{{ errorMsg }}</p>
@@ -83,4 +91,37 @@ export default {
 </script>
 
 <style lang="scss">
+.modify__menu {
+  &.modify__menu--place {
+    top: 28px;
+  }
+  &__text {
+    &--place {
+      .formUnit {
+        &--place {
+          &--city {
+            input {
+              max-width: 170px;
+            }
+          }
+          &--zip {
+            input {
+              max-width: 120px;
+            }
+          }
+          &--name {
+            input {
+              max-width: 170px;
+            }
+          }
+          &--type {
+            input {
+              max-width: 170px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>

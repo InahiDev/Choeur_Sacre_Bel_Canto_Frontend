@@ -1,15 +1,27 @@
 <template>
-  <h3>Ajouter un morceau : <i v-if="!this.showAdd" class="fa-solid fa-circle-plus" @click.stop="showAddMenu()"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showAddMenu()"></i></h3> 
-  <div v-if="this.showAdd">
-    <label for="title">Titre: </label>
-    <input type="text" id="newPieceTitle" name="title" v-model.lazy="piece.title"/><br/>
-    <label for="composer">Compositeur: </label>
-    <input type="text" id="newPieceComposer" name="composer" v-model.lazy="piece.composer"/><br/>
-    <label for="version">Version: </label>
-    <input type="text" id="newPieceVersion" name="version" v-model.lazy="piece.version"/><br/>
-    <label for="arrangement">Arrangement: </label>
-    <input type="text" id="newPieceArrangement" name="arrangement" v-model.lazy="piece.arrangement"/><br/>
-    <input type="submit" value="Soumettre" @click.stop.prevent="addPiece()"/>
+  <h3 class="admin__title">Ajouter un morceau : <i v-if="!this.showAdd" class="fa-solid fa-circle-plus" @click.stop="showAddMenu()"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showAddMenu()"></i></h3> 
+  <div class="admin__add" v-if="this.showAdd">
+    <div class="admin__add__section">
+      <form class="admin__add__section--text">
+        <div class="formUnit formUnit--title">
+          <label for="title">Titre: </label>
+          <input type="text" id="newPieceTitle" name="title" v-model.lazy="piece.title"/>
+        </div>
+        <div class="formUnit formUnit--composer">
+          <label for="composer">Compositeur: </label>
+          <input type="text" id="newPieceComposer" name="composer" v-model.lazy="piece.composer"/>
+        </div>
+        <div class="formUnit formUnit--version">
+          <label for="version">Version: </label>
+          <input type="text" id="newPieceVersion" name="version" v-model.lazy="piece.version"/>
+        </div>
+        <div class="formUnit formUnit--arrangement">
+          <label for="arrangement">Arrangement: </label>
+          <input type="text" id="newPieceArrangement" name="arrangement" v-model.lazy="piece.arrangement"/>
+        </div>
+        <input type="submit" value="Soumettre" @click.stop.prevent="addPiece()"/>
+      </form>
+    </div>
     <p v-if="this.errorMsg"> {{ errorMsg }} </p>
   </div>
 </template>
@@ -61,3 +73,25 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.formUnit {
+  &--composer {
+    input {
+      max-width: 120px;
+    }
+  }
+
+  &--version {
+    input {
+      max-width: 155px;
+    }
+  }
+
+  &--arrangement {
+    input {
+      max-width: 115px;
+    }
+  }
+}
+</style>

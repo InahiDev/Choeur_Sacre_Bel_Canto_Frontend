@@ -1,19 +1,25 @@
 <template>
-  <div>
-    <form :id="'member' + member.id">
+  <div class="modify__menu modify__menu--member">
+    <form class="modify__menu__text modify__menu__text--member" :id="'member' + member.id">
       <p>{{member.email}}</p>
-      <label for="firstName">Prénom : </label>
-      <input name="firstName" type="text" :id="'memberFirstName' + member.id" :placeholder="member.firstName" @change="updateFirstName(member.id)"/><br/>
-      <label for="lastName">Nom de famille : </label>
-      <input name="lastName" type="text" :id="'memberLastName' + member.id" :placeholder="member.lastName" @change="updateLastName(member.id)"/><br/>
-      <label for="role">Niveau d'autorisation : </label>
-      <select name="role" :id="'memberRole' + member.id" :placeholder="member.role" @change="updateRole(member.id)">
-        <option value="">-- Sélectionnez un rôle --</option>
-        <option value="None">Aucun rôle</option>
-        <option value="Elève">Elève</option>
-        <option value="Choriste">Choriste</option>
-        <option value="Admin">Administrateur</option>
-      </select><br/>
+      <div class="formUnit formUnit--modify formUnit--member formUnit--modify--firstName">
+        <label for="firstName">Prénom : </label>
+        <input name="firstName" type="text" :id="'memberFirstName' + member.id" :placeholder="member.firstName" @change="updateFirstName(member.id)"/>
+      </div>
+      <div class="formUnit formUnit--member formUnit--modify formUnit--modify--lastName">
+        <label for="lastName">Nom de famille : </label>
+        <input name="lastName" type="text" :id="'memberLastName' + member.id" :placeholder="member.lastName" @change="updateLastName(member.id)"/>
+      </div>
+      <div class="formUnit formUnit--member formUnit--modify formUnit--modify--role">
+        <label for="role">Niveau d'autorisation : </label>
+        <select name="role" :id="'memberRole' + member.id" :placeholder="member.role" @change="updateRole(member.id)">
+          <option value="">-- Sélectionnez un rôle --</option>
+          <option value="None">Aucun rôle</option>
+          <option value="Elève">Elève</option>
+          <option value="Choriste">Choriste</option>
+          <option value="Admin">Administrateur</option>
+        </select>        
+      </div>
       <input type="submit" value="Mettre à jour" @click.stop.prevent="modifyMember()" :disabled="!this.updateReady"/>
     </form>
   </div>
@@ -120,3 +126,27 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.modify__menu {
+  &.modify__menu--member {
+    width: 121%;
+    top: 30px;
+  }
+
+  &__text {
+    p {
+      width: 100%;
+    }
+
+    .formUnit {
+      &.formUnit--member {
+        @include column;
+        input, select {
+          flex: none;
+        }
+      }
+    }
+  }
+}
+</style>

@@ -1,22 +1,18 @@
 <template>
-  <!--<nav>
-    <router-link to="/">Page d'Accueil</router-link> |
-    <router-link to="/search">Recherche</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/connexion">Connexion</router-link>
-  </nav>
-  <router-view/>-->
   <BannerComp/>
   <router-view/>
+  <FooterComp/>
 </template>
 
 <script>
 import BannerComp from "./components/Banner.vue";
+import FooterComp from '@/components/Footer.vue'
 
 export default {
   name: "App",
   components: {
-    BannerComp
+    BannerComp,
+    FooterComp
   }
 }
 </script>
@@ -37,5 +33,20 @@ body {
   text-align: center;
   color: $color-primary;
   background-color: $bg-main-color;
+}
+
+.parent {
+  position: relative;
+
+  .controls {
+    box-sizing: border-box;
+    position: absolute;
+    background-color: $bg-white;
+    width: 100%;
+    padding: 10px;
+    border-radius: $radius-controls;
+    box-shadow: $shadow-controls;
+    z-index: 1;
+  }
 }
 </style>

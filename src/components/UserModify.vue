@@ -1,12 +1,14 @@
 <template>
-  <form id="userModify">
-    <label for="firstName">Prénom : </label>
-    <input :placeholder="user.firstName" type="text" id="userModifyFirstName" name="firstName" v-model="userModify.firstName"/><br/>
-    <label for="lastName">Nom de famille : </label>
-    <input :placeholder="user.lastName" type="text" id="userModifyLastName" name="lastName" v-model="userModify.lastName"/><br/>
-    <input type="submit" value="Mettre à jour" @click.stop.prevent="modifyUser()"/>
-  </form>
-  <p>Supprimer votre compte? <i class="fa-solid fa-circle-xmark" @click.stop="deleteOwnAccount()"></i></p>
+  <div class="controls controls--infos__user">
+    <form id="userModify">
+      <label for="firstName">Prénom : </label>
+      <input :placeholder="user.firstName" type="text" id="userModifyFirstName" name="firstName" v-model="userModify.firstName"/>
+      <label for="lastName">Nom de famille : </label>
+      <input :placeholder="user.lastName" type="text" id="userModifyLastName" name="lastName" v-model="userModify.lastName"/>
+      <input class="button button--update" type="submit" value="Mettre à jour" @click.stop.prevent="modifyUser()"/>
+    </form>
+    <p>Supprimer votre compte? <i class="fa-solid fa-circle-xmark" @click.stop="deleteOwnAccount()"></i></p>
+  </div>
 </template>
 
 <script>
@@ -62,4 +64,32 @@ export default {
 </script>
 
 <style lang="scss">
+.parent {
+  .controls--infos__user {
+    width: auto;
+    top: 180px;
+    padding: 10px 20px;
+    @include column;
+    gap: 10px;
+
+    form {
+      @include column;
+      gap: 5px;
+
+      .button {
+
+        &--update {
+          width: 60%;
+          border-radius: $radius-small;
+          border: transparent solid 1px;
+          box-sizing: border-box;
+          background-color: $bg-button;
+          border: 1px solid $color-quarternary;
+          box-shadow: $shadow-controls;
+        }
+      }
+    }
+  }
+}
+
 </style>

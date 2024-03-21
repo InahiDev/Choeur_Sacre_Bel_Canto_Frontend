@@ -1,17 +1,16 @@
 <template>
-  <div>
-    <form :id="'file' + file.id">
-      <label for="file">Document: </label>
-      <input type="file" name="file" :id="'fileFile' + file.id" accept="'application/pdf','application/x-rar-compressed','application/zip''application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation'" v-on:change="modifyFileField()"/><br/>
-      <label for="type">Type de document:</label>
-      <input type="text" :placeholder="file.type" name="type" :id="'fileType' + file.id"/><br/>
-      <legend>Relié à:</legend>
-      <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkedTo.place" :file="file" name="lieu" type="place" :array="this.places"/>
-      <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkedTo.piece" :file="file" name="morceau" type="piece" :array="this.pieces"/>
-      <FileUnitMenuLink @linkedId="updateLink($event)" :checked="this.linkedTo.concert" :file="file" name="concert" type="concert" :array="this.concerts"/>
-      <input type="submit" value="Mettre à jour" @click.stop.prevent="modifyFile()"/>
-    </form>
-  </div>
+  <form :id="'file' + file.id">
+    <label for="file">Document: </label>
+    <input class="fileInput" type="file" name="file" :id="'fileFile' + file.id" accept="'application/pdf','application/x-rar-compressed','application/zip''application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation'" v-on:change="modifyFileField()"/>
+    <label for="type">Type de document:</label>
+    <input type="text" :placeholder="file.type" name="type" :id="'fileType' + file.id" v-model="this.updatedFile.type"/>
+    <legend>Relié à:</legend>
+    <FileUnitMenuLink class="parent parent--link" @linkedId="updateLink($event)" :checked="this.linkedTo.place" :file="file" name="lieu" type="place" action="getPlaces"/>
+    <FileUnitMenuLink class="parent parent--link" @linkedId="updateLink($event)" :checked="this.linkedTo.piece" :file="file" name="morceau" type="piece" action="getPieces"/>
+    <FileUnitMenuLink class="parent parent--link" @linkedId="updateLink($event)" :checked="this.linkedTo.concert" :file="file" name="concert" type="concert" action="getConcerts"/>
+    <input type="submit" value="Mettre à jour" @click.stop.prevent="modifyFile()"/>
+    <p v-if="this.errorMsg">{{ errorMsg }}</p>
+  </form>
 </template>
 
 <script>
@@ -36,7 +35,8 @@ export default {
         placeId: null,
         pieceId: null,
         concertId: null
-      }
+      },
+      errorMsg: ""
     }
   },
   components: {
@@ -77,10 +77,62 @@ export default {
         this.linkedTo[`${response.type}`] = false
       }
     },
+    modifyFileField() {
+      if (this.file.originalName !== event.target.files[0].name) {
+        this.errorMsg = ""
+        this.updatedFile.file.originalName = event.target.files[0].name
+        this.updatedFile.file.data = event.target.files[0]
+      } else {
+        this.errorMsg = "Chargement du même fichier."
+      }
+    },
     modifyFile() {
+      if (this.updatedFile.file.originalName
+      || this.updatedFile.type
+      || this.updatedFile.placeId
+      || this.updatedFile.pieceId
+      || this.updatedFile.concertId) {
+        this.errorMsg = ""
+        for (let prop in this.updatedFile) {
+          if (!this.updatedFile[prop]) {
+            this.updatedFile[prop] = this.file[prop]
+          }
+        }
+        this.$store.dispatch('updateFile', {
+          file: this.updatedFile,
+          id: this.file.id
+        })
+          .then(() => {
+            this.$emit('fileUpdated')
+            this.$parent.$emit('fileUpdated')
+          })
+          .catch((error) => {
+            if (error.response.data.message === "File allready saved in db, please dont save it multiple times!") {
+              this.errorMsg = "Ce fichier est déjà stocké en Base de Données."
+            }
+          })
+      } else {
+        this.errorMsg = "Mise à jour impossible. Aucune information n'a changée."
+      }
+      //Il reset à gérer la mise à "null"
     }
   }
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+form {
+  @include column;
+  gap: 5px;
+  box-sizing: border-box;
+  padding: 10px;
+
+  .fileInput {
+    width: 100%;
+  }
+
+  .parent--link {
+    width: 100%;
+  }
+}
+</style>

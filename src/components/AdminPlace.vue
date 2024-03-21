@@ -1,6 +1,7 @@
 <template>
-  <section>
+  <section class="admin__section">
     <PlaceAdd @newPlace="getPlaces()"/>
+    <div class="separation"></div>
     <PlaceModify ref="PlaceModify"/>
   </section>
 </template>

@@ -1,6 +1,6 @@
 <template>
-  <section class="archives">
-    <h3>Ajouter un document : <i v-if="!this.showMenu" class="fa-solid fa-circle-plus" @click.stop="showAddMenu()"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showAddMenu()"></i></h3>
+  <section class="admin__section">
+    <h3 class="admin__title">Ajouter un document : <i v-if="!this.showMenu" class="fa-solid fa-circle-plus" @click.stop="showAddMenu()"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showAddMenu()"></i></h3>
     <FileAdd v-if="this.showMenu"/>
   </section>
 </template>

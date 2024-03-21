@@ -1,16 +1,29 @@
 <template>
-  <h3>Ajouter un lieu de concert : <i v-if="!this.showAdd" class="fa-solid fa-circle-plus" @click.stop="showAddMenu"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showAddMenu"></i></h3>
-  <div v-if="this.showAdd">
-    <p>Réduire le menu: <i class="fa-solid fa-circle-minus" @click.stop="showAddMenu()"></i></p>
-    <label for="city">Ville: </label>
-    <input type="text" id="newPlaceCity" name="city" v-model.lazy="place.city"/><br/>
-    <label for="zip">Code postal: </label>
-    <input type="text" name="zip" id="newPlaceZip" v-model.lazy="place.zip"/><br/>
-    <label for="name">Nom du lieu: </label>
-    <input type="text" id="newPlaceName" name="name" v-model.lazy="place.name"/><br/>
-    <label for="type">Type de lieu (facultatif): </label>
-    <input type="text" id="newPlaceType" name="type" v-model.lazy="place.type"/><br/>
-    <input type="submit" value="Soumettre" @click.stop.prevent="addPlace()"/>
+  <h3 class="admin__title">Ajouter un lieu : <i v-if="!this.showAdd" class="fa-solid fa-circle-plus" @click.stop="showAddMenu"></i><i v-else class="fa-solid fa-circle-minus" @click.stop="showAddMenu"></i></h3>
+  <div class="admin__add" v-if="this.showAdd">
+    <div class="admin__add__section">
+      <form class="admin__add__section--text">
+        <div class="formUnit formUnit--city">
+          <label for="city">Ville :</label>
+          <input type="text" id="newPlaceCity" name="city" v-model.lazy="place.city"/>
+        </div>
+        <div class="formUnit formUnit--zip">
+          <label for="zip">Code postal :</label>
+          <input type="text" name="zip" id="newPlaceZip" v-model.lazy="place.zip"/>
+        </div>
+        <div class="formUnit formUnit--name">
+          <label for="name">Nom :</label>
+          <input type="text" id="newPlaceName" name="name" v-model.lazy="place.name"/>    
+        </div>
+        <div class="formUnit formUnit--type">
+          <label for="type">Type :</label>
+          <input type="text" id="newPlaceType" name="type" v-model.lazy="place.type"/>    
+        </div>
+        <input type="submit" value="Soumettre" @click.stop.prevent="addPlace()"/>
+      </form>
+      
+    </div>
+
     <p v-if="this.errorMsg">{{ errorMsg }}</p>
   </div>
 </template>

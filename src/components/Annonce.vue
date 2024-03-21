@@ -55,7 +55,6 @@ section {
   box-sizing: border-box;
   background-color: $bg-white;
   width: 95%;
-  margin: 10px;
   padding: 15px;
   border-radius: $radius-components;
   box-shadow: $shadow-section;

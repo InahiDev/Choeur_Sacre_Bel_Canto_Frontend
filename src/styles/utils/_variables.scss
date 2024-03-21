@@ -10,6 +10,7 @@ $bg-main-color: #7899C2;
 $bg-white: #FFF;
 $bg-light-grey: #F6F6F6;
 $bg-dark-blue: #002060;
+$bg-button: #E9E9E9;
 
 //Radius communs
 $radius-main: 20px;
@@ -21,6 +22,7 @@ $radius-small: 5px;
 $shadow-section: 4px 4px 5px 2px $bg-main-color;
 $shadow-components: 2px 2px 4px 2px $bg-main-color;
 $shadow-controls: 1px 1px 2px 1px $bg-main-color;
+$shadow-error: 1px 1px 2px 1px #9E9E9E;
 
 //Mediaqueries map-breakpoints
 $breakpoints: (

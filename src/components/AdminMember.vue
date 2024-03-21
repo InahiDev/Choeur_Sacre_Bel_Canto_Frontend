@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="admin__section">
     <MemberModify/>
   </section>
 

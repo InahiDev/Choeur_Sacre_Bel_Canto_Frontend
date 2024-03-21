@@ -1,6 +1,7 @@
 <template>
-  <section>
+  <section class="admin__section">
     <PieceAdd @newPiece="getNewPiece()"/>
+    <div class="separation"></div>
     <PieceModify ref="PieceModify"/>
   </section>
 </template>

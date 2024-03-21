@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer class="footer">
     <div class="footerNav">
       <nav class="footerNav__public">
         <router-link to="/">Accueil</router-link>
@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style lang="scss">
-footer {
+.footer {
   @include column;
   gap: 5px;
   margin-top: 10px;
